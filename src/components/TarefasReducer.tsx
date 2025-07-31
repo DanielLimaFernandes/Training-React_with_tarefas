@@ -2,6 +2,7 @@ import { useReducer, type ActionDispatch } from "react";
 import { useState } from "react";
 import './tarefasReducer.css'
 import { createContext } from "react";
+import { useEffect } from "react";
 
 
 
@@ -29,7 +30,7 @@ function ativoFuncao(valor: boolean) {
 
 // export const TarefasContext = createContext<Tarefa[]>([]);
 
-type acaoTarefa = ({ tipo: "adicionar"; payload: Tarefa } | { tipo: "limpar" } | { tipo: "remover"; payload: number } | { tipo: "concluida"; payload: number })
+type acaoTarefa = ({ tipo: "adicionar"; payload: Tarefa } | { tipo: "limpar" } | { tipo: "remover"; payload: number } | { tipo: "concluida"; payload: number } | {tipo: "busca"; payload: string})
 
 function reducerTarefas(estado: Tarefa[], action: acaoTarefa): Tarefa[] {
 
@@ -52,6 +53,15 @@ function reducerTarefas(estado: Tarefa[], action: acaoTarefa): Tarefa[] {
             i === action.payload ? { ...tarefa, estado: "concluido" } : tarefa
         );
     }
+    if (action.tipo === "busca"){
+        if (action.payload === "todas"){
+
+        }
+        if (action.payload === "ativas"){
+
+        }
+        if (action.payload === "concluidas"){}
+    }
     else { return estado; }
 
 
@@ -68,6 +78,7 @@ const TarefasReducer = () => {
     const [tarefas, dispatch] = useReducer(reducerTarefas, [])
     const [Estado, setEstado] = useState<string>("ativo")
     const [local, setLocal] = useState(0);
+    const [busca, setBusca] = useState("todas");
 
 
 
@@ -89,19 +100,42 @@ const TarefasReducer = () => {
     }
 
 
-    function estadoAtivo() {
-        return ("ativo")
-    }
 
 
     function ativoFuncao(estado: string) {
   return <>{estado === "ativo" ? "Ativa" : "Concluída"}</>;
 }
 
+
+
     function removerTarefa(valor: number) {
         dispatch({ tipo: "remover", payload: valor })
     }
 
+   
+
+        if(busca === "todas"){
+            const tarefasFiltradas = tarefas;
+        }
+        if(busca === "ativas"){
+
+            const tarefasFiltradas = tarefas.filter(tarefa => tarefa.estado === "ativo");
+
+
+        }
+        if(busca === "concluidas"){
+
+            const tarefasFiltradas = tarefas.filter(tarefa => tarefa.estado === "concluido");
+        }
+
+        const tarefasFiltradas = tarefas.filter((tarefa) => {
+  if (busca === "todas") return true;
+  return tarefa.estado === busca;});
+
+//     const tarefasFiltradas = tarefas.filter((tarefa) => {
+//   if (busca === "todas") return true;
+//   return tarefa.estado === busca;
+// });
 
     function apagarTitulo(){
         setTitulo("");
@@ -113,8 +147,20 @@ const TarefasReducer = () => {
     function limparTarefas(){
         const index = local;
         dispatch({tipo: "remover", payload: index})
+
     }
 
+    function limparLista(){
+        const index = local;
+        dispatch({tipo: "limpar"})
+
+    }
+
+    function PassafrLista(){
+
+     useEffect(() => {              }, []);
+
+    }
 
     return (
         <div>
@@ -151,7 +197,7 @@ const TarefasReducer = () => {
             <div className="list">
             <h3>Lista de Tarefas</h3>
             <ul>
-                {tarefas.map((tarefa, index) => (
+                {tarefasFiltradas.map((tarefa, index) => (
                     <li key={index} >
                         <div className="row"> <strong>{index + 1 }</strong>  -  <strong>{tarefa.titulo}</strong> - {tarefa.informacao} -  {ativoFuncao(tarefa.estado)} </div>
                         <button onClick={() => dispatch({ tipo: "remover", payload: index })}>  Remover </button>
@@ -159,10 +205,12 @@ const TarefasReducer = () => {
                             Marcar como concluída
                         </button>
 
+
                     </li>
                 ))}
             </ul>
             </div>
+            
             {/* <button onClick={adicionarTarefa}>Adicionar Tarefa</button>
       <button onClick={limparTarefas}>Limpar Tarefas</button>  */}
 
@@ -171,12 +219,22 @@ const TarefasReducer = () => {
             {/* <button onClick={adicionarUmaTarefa}>Adicionar Tarefa</button> */}
 
             <div className="form">
-            <button onClick={limparTarefas}>Limpar Lista de Tarefas</button>
+            <button onClick={limparLista}>Limpar Lista de Tarefas</button>
 
             <div>
                 <label htmlFor="">informo a tarefa q vc quer apagar <br /></label>
                 <input type="number" value={local} onChange={(e) => setLocal(Number(e.target.value))} />
                 <button onClick={() => removerTarefa(local - 1)} >remover tarefa</button>
+                <select
+                        id="busca"
+                        value={busca}
+                        onChange={(e) => setBusca(e.target.value) }>
+
+                        <option value="todas">todas</option>
+                        <option value="concluido">Concluídas</option>
+                        <option value="ativo">ativas</option>
+
+                    </select>
             </div>
             </div>
 
