@@ -1,0 +1,33 @@
+.form {
+  border: 2px solid #ccc;
+  padding: 16px;
+  text-align: center;
+  border-radius: 10px;
+  width: 300px;
+  margin: 20px auto 20px auto;
+}
+
+.list{
+  border: 2px solid #ccc;
+  padding: 16px;
+  text-align: center;
+  align-items: center;
+  border-radius: 10px;
+  min-width: 300px;
+  margin: auto;
+
+}
+
+.row{
+    display: flex;
+    flex-direction: row;
+}
+
+li{
+    margin: 7px auto 7px auto;
+}
+
+
+strong{
+    margin: auto 3px auto 3px;
+}
